@@ -25,7 +25,7 @@ jobs:
       matrix:
         include:
           - dockerfile: Dockerfile
-            image_name: oanamae_ddns
+            image_name: onamae_ddns
 
     steps:
       - name: Checkout
