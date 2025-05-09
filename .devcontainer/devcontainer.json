@@ -1,0 +1,20 @@
+{
+    "name": "onamae-ddns-updater",
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "redhat.vscode-yaml"
+            ]
+        }
+    },
+    "remoteUser": "root",
+    "workspaceFolder": "/workspace",
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspace,type=bind"
+    ]
+}

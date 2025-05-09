@@ -1,0 +1,73 @@
+name: Build and Tag Images
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  create-tag:
+    runs-on: default
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+    steps:
+      - name: Generate timestamp tag
+        id: set-tag
+        run: |
+          echo "tag=$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: create-tag
+    if: success()
+    runs-on: default
+
+    strategy:
+      matrix:
+        include:
+          - dockerfile: Dockerfile
+            image_name: oanamae_ddns
+
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Print build context
+        run: |
+          echo image_name:${{ matrix.image_name }}
+          echo branch_name:${{ github.ref_name }}
+          echo dockerfile:${{ matrix.dockerfile }}
+          echo tag:${{ needs.create-tag.outputs.tag }}
+          echo git_user:${{ secrets.GIT_USER }}
+          echo git_pat:${{ secrets.GIT_PAT }}
+
+      - name: Kaniko Build
+        uses: https://forgejo.home.arpa/public/kaniko-build-k8s@main
+        with:
+          repo_name: ${{ github.repository }}
+          image_name: ${{ matrix.image_name }}
+          branch_name: ${{ github.ref_name }}
+          dockerfile: ${{ matrix.dockerfile }}
+          tag: ${{ needs.create-tag.outputs.tag }}
+          git_user: ${{ secrets.GIT_USER }}
+          git_pat: ${{ secrets.GIT_PAT }}
+
+  settag:
+    runs-on: default
+    needs: 
+      - build
+      - create-tag
+    if: success()
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Print build context
+        run: |
+          echo TAG:${{ needs.create-tag.outputs.tag }}
+
+      - name: Create and push Git tag
+        run: |
+          git config user.name "${{ secrets.GIT_USER }}"
+          git config user.email "${GIT_USER}@example.com"
+          git tag ${{ needs.create-tag.outputs.tag }}
+          git push origin ${{ needs.create-tag.outputs.tag }}
