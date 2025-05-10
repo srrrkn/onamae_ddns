@@ -33,7 +33,7 @@ if [[ -z "$USER_ID" || -z "$PASSWORD" || -z "$DOMAIN" ]]; then
   exit 1
 fi
 
-# FQDN組み立て（HOSTNAMEは省略可）
+# FQDN組み立て
 FULLDOMAIN="${SUBDOMAIN:+${SUBDOMAIN}.}$DOMAIN"
 echo $FULLDOMAIN
 

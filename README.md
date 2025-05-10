@@ -20,12 +20,12 @@ spec:
         spec:
           containers:
             - name: onamae-ddns
-              image: harbor.home.arpa/nshome/onamae_ddns:latest
+              image: onamae_ddns:latest
               args:
                 - --domname
-                - nakaosora.info
+                - example.com
                 - --hostname
-                - www
+                - ex
               env:
                 - name: USER_ID
                   valueFrom:
