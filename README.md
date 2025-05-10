@@ -1,10 +1,19 @@
 # onamae_ddns
 ## Overview
 お名前.comでDDNSを実現するためのDNS自動登録ツール。
+自身のグローバルIPと現在Aレコードに登録されている値を比較し、差分がある時だけ更新する。
+登録はできず更新のみなので初期登録は画面から実施する必要がある。
 
 ## Usage
-### kubernetesのCronJobとして実行する
-毎日0時に実行するCronJobのサンプル。
+### CLI
+「www.example.com」のAレコードを更新するサンプルコマンド。
+
+```
+USER_ID=userid PASSWORD=pass ./onamae_ddns.sh --domname example.com --hostname www
+```
+
+### CronJob(Kubernetes)
+10分おきに実行するCronJobのサンプル。
 
 ```
 apiVersion: batch/v1
@@ -13,7 +22,7 @@ metadata:
   name: onamae-ddns
   namespace: default
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0/10 * * * *"
   jobTemplate:
     spec:
       template:
@@ -25,7 +34,7 @@ spec:
                 - --domname
                 - example.com
                 - --hostname
-                - ex
+                - www
               env:
                 - name: USER_ID
                   valueFrom:
