@@ -1,6 +1,6 @@
 # onamae_ddns
 ## Overview
-お名前.comでDDNSを実現するための、DNS登録ツール。
+お名前.comでDDNSを実現するためのDNS自動登録ツール。
 
 ## Usage
 ### kubernetesのCronJobとして実行する
